@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Concepts Demo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 70%;
+            max-width: 500px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: scale(0.9);
+            transition: transform 0.2s ease;
+        }
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+        .error {
+            color: #dc2626;
+            font-size: 0.8em;
+            margin-top: 4px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        input[type="range"] {
+            appearance: none;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #6366f1;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #4f46e5;
+        }
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .section-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .fancy-input {
+            border: 2px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+        .fancy-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        .button {
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .button:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .button:hover:after {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div class="max-w-4xl mx-auto space-y-8">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-12">JavaScript Concepts Demo</h1>
+
+        <!-- Background Color Toggle -->
+        <section class="section-card">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">Background Color Toggle</h2>
+            <button id="colorToggle" class="button bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                Toggle Background
+            </button>
+        </section>
+
+        <!-- Text Size Slider -->
+        <section class="section-card">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">Text Size Control</h2>
+            <input type="range" id="sizeSlider" min="12" max="32" value="16" class="w-full mb-6">
+            <div class="border-2 border-gray-200 rounded-lg p-6 bg-gray-50">
+                <p id="sampleText" class="text-gray-700">
+                    This text will change size as you move the slider!
+                </p>
+            </div>
+        </section>
+
+        <!-- Modal Demo -->
+        <section class="section-card">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">Modal Demo</h2>
+            <button id="modalOpen" class="button bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                Open Modal
+            </button>
+        </section>
+
+        <!-- Dropdown Menu -->
+        <section class="section-card">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">Dropdown Menu</h2>
+            <select id="messageDropdown" class="fancy-input w-full p-3 rounded-lg text-gray-700 focus:outline-none">
+                <option value="">Select an option...</option>
+                <option value="morning">Good Morning</option>
+                <option value="afternoon">Good Afternoon</option>
+                <option value="evening">Good Evening</option>
+            </select>
+            <p id="dropdownMessage" class="mt-4 text-gray-600 italic"></p>
+        </section>
+
+        <!-- Form Validation -->
+        <section class="section-card">
+            <h2 class="text-2xl font-semibold mb-6 text-gray-800">Form Validation</h2>
+            <form id="validationForm" class="space-y-6">
+                <div>
+                    <label class="block mb-2 text-gray-700 font-medium">Name:</label>
+                    <input type="text" id="name" class="fancy-input w-full p-3 rounded-lg" required>
+                    <div id="nameError" class="error">Name must be at least 3 characters long</div>
+                </div>
+                <div>
+                    <label class="block mb-2 text-gray-700 font-medium">Email:</label>
+                    <input type="email" id="email" class="fancy-input w-full p-3 rounded-lg" required>
+                    <div id="emailError" class="error">Please enter a valid email address</div>
+                </div>
+                <div>
+                    <label class="block mb-2 text-gray-700 font-medium">Password:</label>
+                    <input type="password" id="password" class="fancy-input w-full p-3 rounded-lg" required>
+                    <div id="passwordError" class="error">
+                        Password must be at least 8 characters long and contain an uppercase letter and a number
+                    </div>
+                </div>
+                <button type="submit" class="button bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 w-full">
+                    Submit Form
+                </button>
+            </form>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">Modal Content</h2>
+            <p class="mb-6 text-gray-600">This is a modal window. Click the close button to dismiss it.</p>
+            <button id="modalClose" class="button bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                Close Modal
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Background Color Toggle
+        let isAltBackground = false;
+        document.getElementById('colorToggle').onclick = () => {
+            isAltBackground = !isAltBackground;
+            document.body.style.background = isAltBackground 
+                ? 'linear-gradient(to bottom right, #fee2e2, #fef2f2)'
+                : 'linear-gradient(to bottom right, #f9fafb, #f3f4f6)';
+        };
+
+        // Text Size Slider
+        const sizeSlider = document.getElementById('sizeSlider');
+        const sampleText = document.getElementById('sampleText');
+        sizeSlider.oninput = (e) => {
+            sampleText.style.fontSize = `${e.target.value}px`;
+        };
+
+        // Modal Functionality
+        const modal = document.getElementById('modal');
+        document.getElementById('modalOpen').onclick = () => {
+            modal.style.display = 'block';
+            setTimeout(() => modal.classList.add('show'), 10);
+        };
+        document.getElementById('modalClose').onclick = () => {
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 200);
+        };
+        window.onclick = (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+                setTimeout(() => modal.style.display = 'none', 200);
+            }
+        };
+
+        // Dropdown Menu
+        document.getElementById('messageDropdown').onchange = (e) => {
+            const messages = {
+                morning: "☀️ Rise and shine! Have a wonderful morning ahead!",
+                afternoon: "🌤️ Hope you're having a productive and energetic afternoon!",
+                evening: "🌙 Winding down for the evening? Take care and rest well!"
+            };
+            const dropdownMessage = document.getElementById('dropdownMessage');
+            dropdownMessage.textContent = messages[e.target.value] || '';
+            dropdownMessage.style.opacity = '0';
+            setTimeout(() => {
+                dropdownMessage.style.transition = 'opacity 0.3s ease';
+                dropdownMessage.style.opacity = '1';
+            }, 10);
+        };
+
+        // Form Validation
+        const form = document.getElementById('validationForm');
+        const fields = {
+            name: {
+                element: document.getElementById('name'),
+                error: document.getElementById('nameError'),
+                validate: (value) => value.length >= 3
+            },
+            email: {
+                element: document.getElementById('email'),
+                error: document.getElementById('emailError'),
+                validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+            },
+            password: {
+                element: document.getElementById('password'),
+                error: document.getElementById('passwordError'),
+                validate: (value) => value.length >= 8 && 
+                    /[A-Z]/.test(value) && 
+                    /[0-9]/.test(value)
+            }
+        };
+
+        // Real-time validation
+        Object.keys(fields).forEach(fieldName => {
+            const field = fields[fieldName];
+            field.element.oninput = () => {
+                const isValid = field.validate(field.element.value);
+                field.error.style.display = isValid ? 'none' : 'block';
+                field.element.style.borderColor = isValid ? '#e5e7eb' : '#dc2626';
+            };
+        });
+
+        // Form submission
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            let isValid = true;
+
+            Object.keys(fields).forEach(fieldName => {
+                const field = fields[fieldName];
+                const valid = field.validate(field.element.value);
+                field.error.style.display = valid ? 'none' : 'block';
+                field.element.style.borderColor = valid ? '#e5e7eb' : '#dc2626';
+                if (!valid) isValid = false;
+            });
+
+            if (isValid) {
+                alert('Form submitted successfully!');
+                form.reset();
+                Object.keys(fields).forEach(fieldName => {
+                    fields[fieldName].element.style.borderColor = '#e5e7eb';
+                });
+            }
+        };
+    </script>
+</body>
+</html>
